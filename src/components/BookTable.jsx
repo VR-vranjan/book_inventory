@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function BookTable({ books, setBooks }) {
-  // Delete book
+export default function BookTable({ books = [], setBooks }) {
   const deleteBook = (id) => {
     if (window.confirm("Are you sure you want to delete this book?")) {
       setBooks(books.filter(book => book.id !== id));
@@ -10,13 +9,7 @@ export default function BookTable({ books, setBooks }) {
 
   return (
     <div style={{ maxHeight: "300px", overflowY: "scroll", marginTop: "20px" }}>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          textAlign: "left"
-        }}
-      >
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ background: "#ddd" }}>
             <th>Title</th>
@@ -27,9 +20,18 @@ export default function BookTable({ books, setBooks }) {
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
+          {books.length === 0 && (
+            <tr>
+              <td colSpan="6" style={{ textAlign: "center" }}>
+                No books available
+              </td>
+            </tr>
+          )}
+
           {books.map(book => (
-            <tr key={book.id} style={{ borderBottom: "1px solid #ccc" }}>
+            <tr key={book.id}>
               <td>{book.title}</td>
               <td>{book.author}</td>
               <td>{book.email}</td>
@@ -43,13 +45,6 @@ export default function BookTable({ books, setBooks }) {
               </td>
             </tr>
           ))}
-          {books.length === 0 && (
-            <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>
-                No books available
-              </td>
-            </tr>
-          )}
         </tbody>
       </table>
     </div>
