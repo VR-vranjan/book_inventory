@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import BookDetails from "./pages/BookDetails";
 import Navbar from "./components/Navbar";
 import { useState } from "react";
+import './App.css';
+
 
 function App() {
   const [books, setBooks] = useState([
