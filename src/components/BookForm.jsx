@@ -16,12 +16,12 @@ export default function BookForm({ books, setBooks }) {
     e.preventDefault();
 
     if (!form.title || !form.author) {
-      alert("All fields required");
+      alert("Title and Author are required");
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(form.email)) {
-      alert("Invalid email");
+      alert("Enter valid email");
       return;
     }
 
