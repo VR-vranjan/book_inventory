@@ -1,31 +1,58 @@
-import { useState } from "react";
-import BookTable from "../components/BookTable";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BookForm from "../components/BookForm";
+import BookTable from "../components/BookTable";
+import { getBooks } from "../api/booksApi";
 
-export default function Home() {
-  const [books, setBooks] = useState([
-    {
-      id: 1,
-      title: "Atomic Habits",
-      author: "James Clear",
-      email: "publisher@books.com",
-      age: 5,
-      publisher: "Penguin",
-      publishedDate: "2018",
-      overview: "A practical guide to building good habits."
+function Home() {
+  const navigate = useNavigate();
+
+  const [books, setBooks] = useState([]);
+  const [editingBook, setEditingBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ API INTEGRATION
+  useEffect(() => {
+    getBooks()
+      .then((res) => {
+        setBooks(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("API Error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleSave = (book) => {
+    if (book.id) {
+      setBooks(books.map(b => (b.id === book.id ? book : b)));
+    } else {
+      setBooks([...books, { ...book, id: Date.now() }]);
     }
-  ]);
+    setEditingBook(null);
+  };
+
+  const handleDelete = (id) => {
+    setBooks(books.filter(book => book.id !== id));
+  };
+
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading books...</p>;
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Book Inventory Management</h1>
-      <p>Manage your book collection easily</p>
+    <div>
+      <BookForm onSave={handleSave} editingBook={editingBook} />
 
-      {/* Add Book Form */}
-      <BookForm books={books} setBooks={setBooks} />
-
-      {/* Book Table */}
-      <BookTable books={books} setBooks={setBooks} />
+      <BookTable
+        books={books}
+        onView={(id) => navigate(`/book/${id}`)}
+        onEdit={setEditingBook}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
+
+export default Home;
