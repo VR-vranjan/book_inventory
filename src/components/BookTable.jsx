@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 
-export default function BookTable({ books = [], setBooks }) {
+export default function BookTable({ books, setBooks }) {
+  // Delete a book from frontend state
   const deleteBook = (id) => {
     if (window.confirm("Are you sure you want to delete this book?")) {
-      setBooks(books.filter(book => book.id !== id));
+      setBooks(books.filter((book) => book.id !== id));
     }
   };
 
   return (
     <div style={{ maxHeight: "300px", overflowY: "scroll", marginTop: "20px" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
         <thead>
           <tr style={{ background: "#ddd" }}>
             <th>Title</th>
@@ -20,31 +21,30 @@ export default function BookTable({ books = [], setBooks }) {
             <th>Actions</th>
           </tr>
         </thead>
-
         <tbody>
-          {books.length === 0 && (
+          {books.length > 0 ? (
+            books.map((book) => (
+              <tr key={book.id} style={{ borderBottom: "1px solid #ccc" }}>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.email}</td>
+                <td>{book.publisher}</td>
+                <td>{book.age}</td>
+                <td>
+                  <Link to={`/book/${book.id}`} style={{ marginRight: "10px" }}>
+                    View
+                  </Link>
+                  <button onClick={() => deleteBook(book.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          ) : (
             <tr>
               <td colSpan="6" style={{ textAlign: "center" }}>
                 No books available
               </td>
             </tr>
           )}
-
-          {books.map(book => (
-            <tr key={book.id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.email}</td>
-              <td>{book.publisher}</td>
-              <td>{book.age}</td>
-              <td>
-                <Link to={`/book/${book.id}`} style={{ marginRight: "10px" }}>
-                  View
-                </Link>
-                <button onClick={() => deleteBook(book.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
         </tbody>
       </table>
     </div>
