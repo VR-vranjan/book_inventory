@@ -1,102 +1,85 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-function BookForm({ onSave, editingBook }) {
-  const [formData, setFormData] = useState({
+export default function BookForm({ onAddBook }) {
+  const [form, setForm] = useState({
     title: "",
     author: "",
+    email: "",
     publisher: "",
-    publishedYear: "",
-    description: ""
+    age: ""
   });
 
-  useEffect(() => {
-    if (editingBook) {
-      setFormData(editingBook);
-    }
-  }, [editingBook]);
-
+  // Handle input changes
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Handle form submit
   const handleSubmit = (e) => {
-    e.preventDefault(); // ✅ REQUIRED
+    e.preventDefault();
 
-    // basic validation
-    if (
-      !formData.title ||
-      !formData.author ||
-      !formData.publisher ||
-      !formData.publishedYear
-    ) {
-      alert("Please fill all required fields");
+    // Basic validations
+    if (!form.title || !form.author) {
+      alert("Title and Author are required");
       return;
     }
 
-    // ✅ THIS IS THE IMPORTANT PART
-    onSave({
-      ...formData,
-      publishedYear: Number(formData.publishedYear)
-    });
+    if (form.email && !form.email.includes("@")) {
+      alert("Please enter a valid email");
+      return;
+    }
 
-    // reset form
-    setFormData({
+    if (form.age && isNaN(form.age)) {
+      alert("Age must be a number");
+      return;
+    }
+
+    // Add book
+    onAddBook({ ...form, id: Date.now() });
+
+    // Reset form
+    setForm({
       title: "",
       author: "",
+      email: "",
       publisher: "",
-      publishedYear: "",
-      description: ""
+      age: ""
     });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>{editingBook ? "Edit Book" : "Add Book"}</h3>
-
+    <form onSubmit={handleSubmit} className="form">
       <input
         name="title"
         placeholder="Title"
-        value={formData.title}
+        value={form.title}
         onChange={handleChange}
       />
-
       <input
         name="author"
         placeholder="Author"
-        value={formData.author}
+        value={form.author}
         onChange={handleChange}
       />
-
+      <input
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+      />
       <input
         name="publisher"
         placeholder="Publisher"
-        value={formData.publisher}
+        value={form.publisher}
         onChange={handleChange}
       />
-
       <input
-        type="number"
-        name="publishedYear"
-        placeholder="Published Year"
-        value={formData.publishedYear}
+        name="age"
+        placeholder="Age"
+        value={form.age}
         onChange={handleChange}
       />
-
-      <textarea
-        name="description"
-        placeholder="Description"
-        value={formData.description}
-        onChange={handleChange}
-      />
-
-      <button type="submit">
-        {editingBook ? "Update Book" : "Add Book"}
-      </button>
+      <button type="submit">Add Book</button>
     </form>
   );
 }
-
-export default BookForm;
