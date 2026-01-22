@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
-import { getBooks } from "../api/booksApi";
+import { useState } from "react";
 import BookTable from "../components/BookTable";
 import BookForm from "../components/BookForm";
 
 export default function Home() {
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    getBooks().then(res => setBooks(res.data));
-  }, []);
+  const [books, setBooks] = useState([
+    {
+      id: 1,
+      title: "Atomic Habits",
+      author: "James Clear",
+      email: "publisher@test.com",
+      age: 5
+    }
+  ]);
 
   return (
-    <div className="container">
-      <BookForm setBooks={setBooks} books={books} />
+    <div style={{ padding: "20px" }}>
+      <BookForm books={books} setBooks={setBooks} />
       <BookTable books={books} setBooks={setBooks} />
     </div>
   );
